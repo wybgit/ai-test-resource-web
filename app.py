@@ -48,6 +48,19 @@ def create_app():
     
     .dataframe {
         font-size: 12px;
+        width: 100% !important;
+    }
+    
+    .dataframe table {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
+    
+    .dataframe th, .dataframe td {
+        text-align: left !important;
+        padding: 8px !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
     }
     
     .stats-box {
@@ -65,6 +78,7 @@ def create_app():
         padding: 20px;
         margin: 10px 0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
     }
     
     .data-section {
@@ -74,6 +88,10 @@ def create_app():
         padding: 20px;
         margin: 10px 0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .toggle-button {
+        margin-bottom: 15px !important;
     }
     """
     
@@ -91,53 +109,12 @@ def create_app():
         **智能资源数据库管理系统** - 基于Gradio构建的现代化数据库查询和管理平台
         
         ---
-        
-        ### ✨ 主要功能
-        - 📊 **数据集管理**: 查看和筛选图像数据集信息
-        - 🤖 **测试用例管理**: 管理AI模型测试用例
-        - 🔍 **智能搜索**: 支持全局搜索和多条件筛选
-        - 📥 **数据导出**: 一键导出多种格式数据
-        - 📱 **响应式设计**: 适配各种屏幕尺寸
-        
-        ---
         """)
         
         # 创建标签页
         with gr.Tabs():
             dataset_tab = create_dataset_tab()
             models_tab = create_models_tab()
-            
-            # 系统状态标签页
-            with gr.Tab("⚙️ 系统状态") as status_tab:
-                gr.Markdown("## 🔧 系统状态监控")
-                
-                with gr.Row():
-                    with gr.Column():
-                        gr.Markdown("### 📊 数据库状态")
-                        db_status = gr.JSON(label="数据库健康检查", value=check_database_health())
-                        
-                        gr.Markdown("### 💻 系统信息")
-                        sys_info = gr.JSON(label="系统信息", value=get_system_info())
-                    
-                    with gr.Column():
-                        gr.Markdown("### 🔄 刷新状态")
-                        refresh_btn = gr.Button("🔄 刷新状态信息", variant="primary")
-                        
-                        gr.Markdown("### 📝 操作日志")
-                        log_display = gr.Textbox(
-                            label="最近日志",
-                            lines=10,
-                            max_lines=20,
-                            value="日志加载中...",
-                            interactive=False
-                        )
-                
-                # 刷新按钮事件
-                refresh_btn.click(
-                    fn=lambda: (check_database_health(), get_system_info()),
-                    inputs=[],
-                    outputs=[db_status, sys_info]
-                )
         
         # 页脚信息
         gr.Markdown("""

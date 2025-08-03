@@ -11,6 +11,12 @@ from database import db_manager
 from database_config import TABLE_CONFIG
 from utils import create_status_message, create_export_filename, performance_monitor
 
+def toggle_filter_visibility(current_visible: bool) -> Tuple[gr.Column, str]:
+    """切换筛选器显示/隐藏状态"""
+    new_visible = not current_visible
+    button_text = "🔧 隐藏筛选选项" if new_visible else "🔧 显示筛选选项"
+    return gr.Column(visible=new_visible), button_text
+
 def create_filter_interface(table_name: str) -> Dict[str, gr.components.Component]:
     """创建筛选界面组件"""
     components = {}
@@ -65,12 +71,22 @@ def create_data_display(table_name: str = None) -> Dict[str, gr.components.Compo
     # 统计信息
     components["stats"] = gr.Markdown(initial_stats)
     
-    # 数据表格
+    # 数据表格 - 根据表格内容动态调整列宽
+    if table_name == "dataset_index":
+        # 数据集表格有12列，调整列宽
+        column_widths = ["8%", "12%", "6%", "6%", "10%", "12%", "12%", "12%", "8%", "8%", "8%", "8%"]
+    elif table_name == "test_cases":
+        # 测试用例表格有15列，调整列宽
+        column_widths = ["6%", "10%", "8%", "8%", "8%", "6%", "6%", "6%", "8%", "6%", "6%", "6%", "8%", "8%", "10%"]
+    else:
+        column_widths = None
+    
     components["dataframe"] = gr.Dataframe(
         label="数据表格",
         interactive=False,
         wrap=True,
-        value=initial_df
+        value=initial_df,
+        column_widths=column_widths
     )
     
     # 下载文件组件
@@ -201,12 +217,16 @@ def reset_all_filters(table_name: str) -> Tuple[str, Dict[str, List], pd.DataFra
 
 def create_dataset_tab() -> gr.Tab:
     """创建数据集标签页"""
-    with gr.Tab("📊 数据集索引") as tab:
-        gr.Markdown("## 🗂️ 数据集索引管理")
+    with gr.Tab("📊 数据集") as tab:
+        gr.Markdown("## 🗂️ 数据集管理")
         gr.Markdown("查看和筛选图像数据集信息，支持多条件筛选和数据导出。")
         
+        # 筛选控制显示/隐藏按钮
         with gr.Row():
-            with gr.Column(scale=1):
+            toggle_filter_btn = gr.Button("🔧 显示筛选选项", variant="secondary", elem_classes=["toggle-button"])
+        
+        with gr.Row():
+            with gr.Column(scale=1, visible=False) as filter_column:
                 gr.Markdown("### 🔧 筛选控制")
                 
                 # 创建筛选组件
@@ -230,6 +250,19 @@ def create_dataset_tab() -> gr.Tab:
                 stats_display = display_components["stats"]
                 data_display = display_components["dataframe"]
                 download_file = display_components["download"]
+        
+        # 筛选器显示/隐藏切换事件
+        filter_visible_state = gr.State(False)  # 初始状态为隐藏
+        
+        toggle_filter_btn.click(
+            fn=lambda visible: (
+                gr.Column(visible=not visible),
+                "🔧 隐藏筛选选项" if not visible else "🔧 显示筛选选项",
+                not visible
+            ),
+            inputs=[filter_visible_state],
+            outputs=[filter_column, toggle_filter_btn, filter_visible_state]
+        )
         
         # 设置事件处理
         inputs = [
@@ -290,8 +323,12 @@ def create_models_tab() -> gr.Tab:
         gr.Markdown("## 🧪 测试用例管理")
         gr.Markdown("查看和筛选AI模型测试用例信息，支持多条件筛选和数据导出。")
         
+        # 筛选控制显示/隐藏按钮
         with gr.Row():
-            with gr.Column(scale=1):
+            toggle_filter_btn = gr.Button("🔧 显示筛选选项", variant="secondary", elem_classes=["toggle-button"])
+        
+        with gr.Row():
+            with gr.Column(scale=1, visible=False) as filter_column:
                 gr.Markdown("### 🔧 筛选控制")
                 
                 # 创建筛选组件
@@ -315,6 +352,19 @@ def create_models_tab() -> gr.Tab:
                 stats_display = display_components["stats"]
                 data_display = display_components["dataframe"]
                 download_file = display_components["download"]
+        
+        # 筛选器显示/隐藏切换事件
+        filter_visible_state = gr.State(False)  # 初始状态为隐藏
+        
+        toggle_filter_btn.click(
+            fn=lambda visible: (
+                gr.Column(visible=not visible),
+                "🔧 隐藏筛选选项" if not visible else "🔧 显示筛选选项",
+                not visible
+            ),
+            inputs=[filter_visible_state],
+            outputs=[filter_column, toggle_filter_btn, filter_visible_state]
+        )
         
         # 设置事件处理
         inputs = [

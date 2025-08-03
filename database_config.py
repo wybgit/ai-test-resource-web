@@ -20,7 +20,7 @@ DATABASE_CONFIG: Dict[str, Any] = {
 # 表配置
 TABLE_CONFIG = {
     "dataset_index": {
-        "name": "数据集索引",
+        "name": "数据集",
         "primary_key": "image_id",
         "columns": {
             "image_id": "图像ID",
