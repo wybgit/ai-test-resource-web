@@ -1,0 +1,19 @@
+# Gradio应用依赖包
+# Core dependencies
+gradio>=4.0.0
+pandas>=1.5.0
+mysql-connector-python>=8.0.33
+
+# Database and data processing
+python-dotenv>=1.0.0
+numpy>=1.24.0
+
+# Optional: for better performance and monitoring
+openpyxl>=3.1.0  # Excel文件支持
+xlsxwriter>=3.0.0  # Excel写入支持
+# psutil>=5.9.0  # 系统监控 (可选)
+
+# Development dependencies (optional)
+# pytest>=7.0.0
+# black>=23.0.0
+# flake8>=6.0.0

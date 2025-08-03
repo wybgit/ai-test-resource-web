@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  gradio-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ai-resources-gradio
+    ports:
+      - "7860:7860"
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST:-mysql}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-mydatabase}
+      - MYSQL_USER=${MYSQL_USER:-myuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-mypassword}
+    volumes:
+      - ../exports:/app/exports
+      - ../logs:/app/logs
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - ai-resources-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: ai-resources-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-mydatabase}
+      - MYSQL_USER=${MYSQL_USER:-myuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-mypassword}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../sql:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - ai-resources-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ai-resources-network:
+    driver: bridge

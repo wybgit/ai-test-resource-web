@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 环境配置
+.env
+.env.local
+.env.production
+.env.staging
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志文件
+logs/*.log
+*.log
+
+# 导出文件
+exports/*.csv
+exports/*.xlsx
+exports/*.json
+
+# 临时文件
+tmp/
+temp/
+.tmp/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 备份文件
+*.bak
+*.backup
